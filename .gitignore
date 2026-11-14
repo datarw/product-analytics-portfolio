@@ -1,0 +1,21 @@
+# Данные и библиотека лежат вне репозитория; записи — страховка от случайного add.
+data/
+ltv-clv-library/
+analytics-library/
+journals/
+Claude outputs/
+*.zip
+
+# Рабочие журналы не публикуются.
+case_ltv/case_ltv.md
+case_ab/case_ab.md
+case_dashboard/case_dashboard.md
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+.DS_Store
+Thumbs.db
