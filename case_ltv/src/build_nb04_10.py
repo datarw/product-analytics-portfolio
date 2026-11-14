@@ -421,6 +421,10 @@ x0 = x == 0
 spend_main[x0] = w * first_check.to_numpy()[x0] + (1 - w) * pop_mean
 print('first_check: median', round(first_check.median(), 1), '£')
 print('spend x=0: mean', round(spend_main[x0].mean(), 1), '£ · spend x>=1: mean', round(spend_main[~x0].mean(), 1), '£')
+d['first_check'] = first_check
+g2 = d[d.frequency >= 1]
+print('corr(first_check, monetary | x>=1):', round(g2[['first_check', 'monetary']].corr().iloc[0, 1], 3))
+print('corr(first_check, holdout revenue):', round(d[['first_check', 'revenue_holdout']].corr().iloc[0, 1], 3))
 """),
     md("## §5а-3: ноль против «нет данных»"),
     code("""# monetary не определено ровно там, где frequency = 0 — это не ноль чека
