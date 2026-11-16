@@ -1,4 +1,4 @@
-from experiment import srm_test, two_proportion_ztest, wilson_ci
+from experiment import holm_adjust, srm_test, two_proportion_ztest, wilson_ci
 
 
 def test_srm_balanced():
@@ -26,3 +26,9 @@ def test_two_proportion_large_diff():
 def test_wilson_ci_contains_estimate():
     lo, hi = wilson_ci(50, 100)
     assert lo < 0.5 < hi
+
+
+def test_holm_adjust_is_monotone_and_bounded():
+    adjusted = holm_adjust([0.01, 0.04, 0.03])
+    assert (adjusted >= 0).all() and (adjusted <= 1).all()
+    assert adjusted.min() >= 0.01

@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
-from scipy.stats import chisquare, norm
+from scipy.stats import chisquare, mannwhitneyu, norm
 
 
 def srm_test(counts, expected_ratio=None) -> dict:
@@ -95,6 +95,92 @@ def aa_placebo(df: pd.DataFrame, metric: str, rng: np.random.Generator,
         "false_positive_rate": float((p_values < alpha).mean()),
         "p_values": p_values,
     }
+
+
+def holm_adjust(p_values) -> np.ndarray:
+    """Holm–Bonferroni: контроль FWER при нескольких метриках."""
+    p = np.asarray(p_values, dtype=float)
+    order = np.argsort(p)
+    m = len(p)
+    adjusted = np.empty(m, dtype=float)
+    running = 0.0
+    for rank, idx in enumerate(order):
+        running = max(running, min(1.0, (m - rank) * p[idx]))
+        adjusted[idx] = running
+    return adjusted
+
+
+def downsample_diff(df: pd.DataFrame, metric: str, rng: np.random.Generator,
+                    n_iter: int = 1000, alpha: float = 0.05) -> dict:
+    """SRM-чувствительность: много раз уменьшаем большую группу до размера меньшей.
+
+    Это не исправляет смещение, но показывает, что эффект не создан лишними
+    пользователями из перевешенной группы.
+    """
+    a = df.loc[df["version"] == "gate_30", metric].to_numpy(dtype=bool)
+    b = df.loc[df["version"] == "gate_40", metric].to_numpy(dtype=bool)
+    n = min(a.size, b.size)
+    diffs = np.empty(n_iter)
+    for i in range(n_iter):
+        b_sample = rng.choice(b, size=n, replace=False)
+        diffs[i] = b_sample.mean() - a.mean()
+    return {
+        "metric": metric,
+        "n_per_arm": int(n),
+        "n_iter": n_iter,
+        "point_full": float(b.mean() - a.mean()),
+        "mean_downsampled": float(diffs.mean()),
+        "ci_low": float(np.percentile(diffs, 100 * alpha / 2)),
+        "ci_high": float(np.percentile(diffs, 100 * (1 - alpha / 2))),
+    }
+
+
+def bootstrap_median_diff(a, b, rng: np.random.Generator,
+                          n_iter: int = 1000, alpha: float = 0.05) -> dict:
+    """Bootstrap CI for median(B) − median(A); heavy-tailed guardrail."""
+    a = np.asarray(a)
+    b = np.asarray(b)
+    diffs = np.empty(n_iter)
+    for i in range(n_iter):
+        diffs[i] = (np.median(rng.choice(b, size=b.size, replace=True))
+                    - np.median(rng.choice(a, size=a.size, replace=True)))
+    return {
+        "median_a": float(np.median(a)),
+        "median_b": float(np.median(b)),
+        "diff": float(np.median(b) - np.median(a)),
+        "ci_low": float(np.percentile(diffs, 100 * alpha / 2)),
+        "ci_high": float(np.percentile(diffs, 100 * (1 - alpha / 2))),
+    }
+
+
+def guardrail_table(df: pd.DataFrame, rng: np.random.Generator) -> pd.DataFrame:
+    """Retention + engagement guardrails с Holm-поправкой."""
+    a = df[df["version"] == "gate_30"]
+    b = df[df["version"] == "gate_40"]
+    rows = []
+
+    for metric in ("retention_1", "retention_7"):
+        res = two_proportion_ztest(a[metric].sum(), len(a), b[metric].sum(), len(b))
+        rows.append({"metric": metric, "kind": "retention", **res})
+
+    zero_a = (a["sum_gamerounds"] == 0)
+    zero_b = (b["sum_gamerounds"] == 0)
+    res = two_proportion_ztest(zero_a.sum(), len(a), zero_b.sum(), len(b))
+    rows.append({"metric": "zero_rounds", "kind": "guardrail", **res})
+
+    mw = mannwhitneyu(a["sum_gamerounds"], b["sum_gamerounds"], alternative="two-sided")
+    med = bootstrap_median_diff(a["sum_gamerounds"], b["sum_gamerounds"], rng)
+    rows.append({
+        "metric": "median_gamerounds", "kind": "guardrail",
+        "p_a": med["median_a"], "p_b": med["median_b"],
+        "diff": med["diff"], "ci_low": med["ci_low"], "ci_high": med["ci_high"],
+        "z": np.nan, "p_value": float(mw.pvalue),
+        "relative_lift": np.nan,
+    })
+
+    out = pd.DataFrame(rows)
+    out["p_holm"] = holm_adjust(out["p_value"])
+    return out
 
 
 def baseline_table(df: pd.DataFrame, metrics=("retention_1", "retention_7")) -> pd.DataFrame:
