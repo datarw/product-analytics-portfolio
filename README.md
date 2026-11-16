@@ -43,6 +43,6 @@ python -m ruff check case_ltv/src tests
 python sync_check.py --audit
 ```
 
-`requirements.txt` — runtime для ноутбуков, `requirements-dev.txt` — тесты и линтер. CI в `.github/workflows/ci.yml` запускает тесты, ruff и compileall; ноутбуки в CI не исполняются, потому что для них нужен датасет. Правила для людей и агентов — в [CONTRIBUTING.md](CONTRIBUTING.md) и [AGENTS.md](AGENTS.md); стандарт кейса — в [docs/conventions.md](docs/conventions.md).
+`requirements.txt` — runtime для ноутбуков, `requirements-dev.txt` — тесты и линтер. CI в `.github/workflows/ci.yml` запускает тесты, ruff и compileall; ноутбуки в CI не исполняются, потому что для них нужен датасет. Правила для людей и агентов — в [CONTRIBUTING.md](CONTRIBUTING.md) и [AGENT.md](AGENT.md); стандарт кейса — в [docs/conventions.md](docs/conventions.md).
 
 Данные: Online Retail II (UCI), CC BY 4.0, Chen, D. (2012), DOI 10.24432/C5CG6D. Данные, библиотека источников и рабочие журналы лежат вне репозитория; в git едут код, ноутбуки с выводом, графики, тесты и README.
