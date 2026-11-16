@@ -23,6 +23,10 @@ def execute(name: str, timeout: int = 900) -> None:
 
 
 if __name__ == "__main__":
-    names = sys.argv[1:] or ["11-load-and-aa-check.ipynb"]
+    names = sys.argv[1:] or [
+        "11-load-and-aa-check.ipynb",
+        "12-effect-and-guardrails.ipynb",
+        "13-design-and-power.ipynb",
+    ]
     for n in names:
         execute(n)

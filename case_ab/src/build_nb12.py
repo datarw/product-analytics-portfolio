@@ -47,6 +47,9 @@ Mann–Whitney, а не среднее."""),
     code("""guard = guardrail_table(df, RNG)
 guard.round(5)
 """),
+    code("""effect_per_million = 1_000_000 * guard.loc[guard.metric == 'retention_7', 'diff'].iloc[0]
+print('эффект retention_7 на 1 млн установок:', round(effect_per_million))
+"""),
     md("""## Лесной график: размер эффекта и интервал
 
 Красным — значимо после Holm-поправки на четыре метрики. Нулевая линия —
