@@ -1,0 +1,15 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["case_ltv/notebooks"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+ignore = ["E402", "E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["data", "features", "metrics", "models", "paths", "plots"]
