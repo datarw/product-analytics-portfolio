@@ -30,7 +30,7 @@
 - Base: contribution £585 тыс., LTV:CAC 2.27, payback 5.3 мес; optimistic £1.04 млн, pessimistic £365 тыс.
 - SQLite-витрина, Streamlit-приложение и 5 скриншотов; публичная ссылка — после деплоя
 
-[Разбор кейса →](case_dashboard/README.md)
+[Разбор кейса →](case_dashboard/README.md) · [Публичный дашборд →](https://datarw.github.io/product-analytics-portfolio/)
 
 ---
 
