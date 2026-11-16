@@ -21,6 +21,6 @@ jobs:
       - name: Unit tests
         run: python -m pytest
       - name: Lint
-        run: python -m ruff check case_ltv/src tests
+        run: python -m ruff check case_ltv/src case_ab/src case_dashboard/src tests
       - name: Compile
         run: python -m compileall -q case_ltv/src

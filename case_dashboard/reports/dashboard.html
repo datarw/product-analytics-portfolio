@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><title>Unit economics dashboard</title>
+<style>body{font-family:Arial,sans-serif;max-width:1100px;margin:32px auto;color:#222}
+img{max-width:100%;border:1px solid #ddd;margin:12px 0}table{border-collapse:collapse;margin:12px 0}
+td,th{border:1px solid #ddd;padding:6px 10px;text-align:right}th{background:#f4f4f4}
+.small{color:#666;font-size:13px}</style></head><body>
+<h1>Юнит-экономика каналов</h1>
+<p class="small">Синтетические каналы; CAC и margin — сценарные допущения. Данные вне git.</p>
+<img src="figures/01-dashboard-overview.png" alt="overview">
+<h2>Каналы</h2><table><tr><th>channel</th><th>n</th><th>budget</th><th>LTV:CAC</th><th>payback</th><th>decision</th></tr><tr><td>organic</td><td>576</td><td>£11,520</td><td>15.37</td><td>0.8</td><td>scale</td></tr><tr><td>email</td><td>697</td><td>£20,910</td><td>10.73</td><td>1.1</td><td>scale</td></tr><tr><td>referral</td><td>510</td><td>£30,600</td><td>6.49</td><td>1.8</td><td>scale</td></tr><tr><td>social</td><td>692</td><td>£138,400</td><td>1.40</td><td>8.6</td><td>keep</td></tr><tr><td>paid_search</td><td>813</td><td>£260,160</td><td>0.97</td><td>12.3</td><td>pause</td></tr></table>
+<h2>Сценарии</h2><table><tr><th>scenario</th><th>contribution</th><th>LTV:CAC</th><th>payback</th></tr><tr><td>optimistic</td><td>£1,035,197</td><td>3.64</td><td>3.3</td></tr><tr><td>base</td><td>£585,000</td><td>2.27</td><td>5.3</td></tr><tr><td>pessimistic</td><td>£364,943</td><td>1.63</td><td>7.4</td></tr></table>
+<img src="figures/02-channel-unit-economics.png" alt="channels">
+<img src="figures/03-cohort-contribution.png" alt="cohorts">
+<img src="figures/04-scenarios.png" alt="scenarios">
+<img src="figures/05-reallocation.png" alt="reallocation">
+</body></html>
